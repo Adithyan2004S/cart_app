@@ -1,0 +1,83 @@
+
+{% extends 'base.html' %}
+{% block title %}Shopping Cart | E-Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">Your Shopping Cart</h1>
+
+    {% if items %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {% for item in items %}
+            <div class="bg-white rounded-4 p-3 mb-3">
+                <div class="row align-items-center g-3">
+                    <div class="col-4 col-md-3">
+                        <img src="{{ item.product.image.url }}"
+                             alt="{{ item.product.name }}"
+                             class="img-fluid"
+                             style="height:120px;width:100%;object-fit:contain;">
+                    </div>
+
+                    <div class="col-8 col-md-9">
+                        <h5>{{ item.product.name }}</h5>
+                        <p>₹{{ item.product.price|floatformat:2 }}</p>
+
+                        <form method="post"
+                              action="{% url 'update_cart' item.id %}"
+                              class="d-flex gap-2 align-items-center mb-2">
+                            {% csrf_token %}
+                            <input type="number" name="quantity"
+                                   value="{{ item.quantity }}"
+                                   min="1" max="{{ item.product.stock }}"
+                                   class="form-control"
+                                   style="max-width:100px;">
+                            <button class="btn btn-outline-dark btn-sm">
+                                Update
+                            </button>
+                        </form>
+
+                        <p>Subtotal: ₹{{ item.subtotal|floatformat:2 }}</p>
+
+                        <form method="post"
+                              action="{% url 'remove_from_cart' item.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-link text-danger p-0">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="bg-white rounded-4 p-4">
+                <h4>Order Summary</h4>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <span>Total</span>
+                    <strong>₹{{ total|floatformat:2 }}</strong>
+                </div>
+                <p class="small text-secondary mt-2">
+                    Delivery charges and applicable taxes are not included.
+                </p>
+                <a href="{% url 'checkout' %}"
+                   class="btn btn-dark w-100 mt-3">
+                    Proceed to Checkout
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="bg-white rounded-4 p-5 text-center">
+            <h4>Your cart is empty</h4>
+            <p>Discover something you love.</p>
+            <a href="{% url 'home' %}" class="btn btn-dark">
+                Shop Now
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

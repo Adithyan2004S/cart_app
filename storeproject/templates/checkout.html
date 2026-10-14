@@ -1,0 +1,63 @@
+
+{% extends 'base.html' %}
+{% block title %}Checkout | E-Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">Checkout</h1>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <form method="post" class="bg-white rounded-4 p-4">
+                {% csrf_token %}
+                <h4 class="mb-4">Delivery Information</h4>
+
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" maxlength="150"
+                       class="form-control mb-3" required>
+
+                <label class="form-label">Phone Number</label>
+                <input type="tel" name="phone" maxlength="20"
+                       class="form-control mb-3" required>
+
+                <label class="form-label">Address</label>
+                <textarea name="address" class="form-control mb-3"
+                          rows="3" required></textarea>
+
+                <label class="form-label">City</label>
+                <input type="text" name="city" maxlength="100"
+                       class="form-control mb-3" required>
+
+                <label class="form-label">Postal Code</label>
+                <input type="text" name="postal_code" maxlength="12"
+                       class="form-control mb-3" required>
+
+                <button type="submit" class="btn btn-dark w-100 mt-2">
+                    Place Order
+                </button>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="bg-white rounded-4 p-4">
+                <h4>Your Order</h4>
+                <hr>
+                {% for item in items %}
+                <div class="d-flex justify-content-between gap-3 mb-3">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span>₹{{ item.subtotal|floatformat:2 }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <strong>Total</strong>
+                    <strong>₹{{ total|floatformat:2 }}</strong>
+                </div>
+                <p class="small text-secondary mt-3">
+                    This demo records orders but does not process payments.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

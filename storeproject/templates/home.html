@@ -1,0 +1,147 @@
+
+{% extends 'base.html' %}
+{% block title %}E-Cart | Home{% endblock %}
+
+{% block content %}
+
+{% if banners %}
+<div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for banner in banners %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <section class="hero">
+                <div class="container">
+                    <h1 class="display-4 fw-bold">{{ banner.title }}</h1>
+                    <p class="lead">{{ banner.content }}</p>
+                    <img src="{{ banner.image.url }}" alt="{{ banner.title }}"
+                         class="img-fluid mb-3"
+                         style="max-height:320px; object-fit:contain;">
+                    {% if banner.button_text and banner.button_link %}
+                    <div>
+                        <a href="{{ banner.button_link }}"
+                           class="btn btn-dark rounded-pill px-4">
+                            {{ banner.button_text }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+        {% endfor %}
+    </div>
+    {% if banners|length > 1 %}
+    <button class="carousel-control-prev" type="button"
+            data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button"
+            data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+<section class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Discover your next favourite.</h1>
+        <p class="text-secondary">Thoughtful technology for every day.</p>
+    </div>
+
+    <form method="get" class="row g-2 justify-content-center mb-4">
+        <div class="col-12 col-md-5">
+            <input type="search" name="q" class="form-control"
+                   placeholder="Search products..."
+                   value="{{ query }}">
+        </div>
+        <div class="col-8 col-md-3">
+            <select name="category" class="form-select">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}"
+                    {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-4 col-md-2">
+            <button class="btn btn-dark w-100">Search</button>
+        </div>
+    </form>
+</section>
+
+{% if featured_products %}
+<section class="container pb-5">
+    <h2 class="section-title text-center mb-4">Featured Products</h2>
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card product-card shadow-sm h-100">
+                <img src="{{ product.image.url }}" class="product-img"
+                     alt="{{ product.name }}">
+                <div class="card-body text-center">
+                    <h4>{{ product.name }}</h4>
+                    <p class="text-secondary">
+                        {{ product.description|truncatewords:12 }}
+                    </p>
+                    <h5>₹{{ product.price|floatformat:2 }}</h5>
+                    <a href="{% url 'product_detail' product.id %}"
+                       class="btn btn-dark rounded-pill px-4 mt-2">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section class="container pb-5">
+    <h2 class="section-title text-center mb-4">Shop by Category</h2>
+    <div class="row g-3">
+        {% for category in categories %}
+        <div class="col-6 col-md-3">
+            <a href="?category={{ category.id }}#products"
+               class="d-block bg-white p-4 rounded-4 text-center h-100 text-dark">
+                <h5>{{ category.name }}</h5>
+                <p class="small text-secondary mb-0">
+                    {{ category.description }}
+                </p>
+            </a>
+        </div>
+        {% empty %}
+        <p class="text-center">Categories will appear here soon.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container pb-5" id="products">
+    <h2 class="section-title text-center mb-4">Explore Products</h2>
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card product-card shadow-sm h-100">
+                <img src="{{ product.image.url }}" class="product-img"
+                     alt="{{ product.name }}">
+                <div class="card-body text-center">
+                    <p class="text-secondary small">{{ product.category.name }}</p>
+                    <h5>{{ product.name }}</h5>
+                    <p>₹{{ product.price|floatformat:2 }}</p>
+                    <a href="{% url 'product_detail' product.id %}"
+                       class="btn btn-outline-dark rounded-pill">
+                        View Product
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No matching products found.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

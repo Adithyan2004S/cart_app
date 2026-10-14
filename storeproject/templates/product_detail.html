@@ -1,0 +1,46 @@
+
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} | E-cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-md-6">
+            <div class="bg-white rounded-4 p-4">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                     class="img-fluid w-100"
+                     style="height:420px;object-fit:contain;">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <p class="text-secondary">{{ product.category.name }}</p>
+            <h1 class="fw-bold">{{ product.name }}</h1>
+            <h3 class="my-4">₹{{ product.price|floatformat:2 }}</h3>
+            <p>{{ product.description }}</p>
+
+            {% if product.stock > 0 %}
+                <p class="text-success">In stock: {{ product.stock }}</p>
+
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input id="quantity" type="number" name="quantity"
+                           value="1" min="1" max="{{ product.stock }}"
+                           class="form-control mb-3" style="max-width:120px;">
+
+                    <button class="btn btn-dark rounded-pill px-4">
+                        Add to Cart
+                    </button>
+                </form>
+            {% else %}
+                <p class="text-danger">Currently out of stock</p>
+            {% endif %}
+
+            <a href="{% url 'home' %}" class="btn btn-outline-dark mt-3">
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

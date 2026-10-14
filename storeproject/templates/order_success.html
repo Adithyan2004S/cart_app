@@ -1,0 +1,24 @@
+
+{% extends 'base.html' %}
+{% block title %}Order Placed |  E-Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="bg-white rounded-4 p-5 text-center">
+        <h1 class="fw-bold">Thank you for your order!</h1>
+        <p>Your order has been recorded successfully.</p>
+        <h5>Order number: #{{ order.id }}</h5>
+        <p>Status: {{ order.get_status_display }}</p>
+        <h4>Total: ₹{{ order.total_amount|floatformat:2 }}</h4>
+
+        <a href="{% url 'order_detail' order.id %}"
+           class="btn btn-dark mt-3">
+            View Order
+        </a>
+        <a href="{% url 'home' %}"
+           class="btn btn-outline-dark mt-3">
+            Continue Shopping
+        </a>
+    </div>
+</div>
+{% endblock %}

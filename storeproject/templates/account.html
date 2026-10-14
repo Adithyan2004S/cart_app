@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% block title %}My Account | E-Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="bg-white rounded-4 p-4 mb-4">
+        <h1 class="fw-bold">My Account</h1>
+        <p>Welcome, {{ request.user.username }}!</p>
+        <p>Email: {{ request.user.email|default:"Not provided" }}</p>
+        <a href="{% url 'order_history' %}"
+           class="btn btn-dark">My Orders</a>
+    </div>
+
+    <h3 class="mb-3">Recent Orders</h3>
+
+    {% for order in orders|slice:":5" %}
+    <div class="bg-white rounded-4 p-3 mb-3">
+        <strong>Order #{{ order.id }}</strong>
+        <p class="mb-1">Total: ₹{{ order.total_amount|floatformat:2 }}</p>
+        <p>Status: {{ order.get_status_display }}</p>
+        <a href="{% url 'order_detail' order.id %}">View order</a>
+    </div>
+    {% empty %}
+    <p>You have not placed any orders yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

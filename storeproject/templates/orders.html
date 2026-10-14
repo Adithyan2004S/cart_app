@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+{% block title %}My Orders |  E-Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">My Orders</h1>
+
+    {% for order in orders %}
+    <div class="bg-white rounded-4 p-4 mb-3">
+        <div class="row align-items-center">
+            <div class="col-md-3">
+                <strong>Order #{{ order.id }}</strong>
+                <p class="small text-secondary">
+                    {{ order.created_at|date:"d M Y, H:i" }}
+                </p>
+            </div>
+            <div class="col-md-3">
+                ₹{{ order.total_amount|floatformat:2 }}
+            </div>
+            <div class="col-md-3">
+                {{ order.get_status_display }}
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'order_detail' order.id %}"
+                   class="btn btn-outline-dark btn-sm">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="bg-white rounded-4 p-5 text-center">
+        <h4>No orders yet</h4>
+        <a href="{% url 'home' %}" class="btn btn-dark mt-3">
+            Start Shopping
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.id }} | E-Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="bg-white rounded-4 p-4">
+        <h1 class="fw-bold">Order #{{ order.id }}</h1>
+        <p>Placed on {{ order.created_at|date:"d M Y, H:i" }}</p>
+        <p>Status: <strong>{{ order.get_status_display }}</strong></p>
+
+        <hr>
+        <h4>Items</h4>
+
+        {% for item in order.items.all %}
+        <div class="d-flex justify-content-between gap-3 py-3 border-bottom">
+            <div>
+                <strong>{{ item.product_name }}</strong>
+                <p class="text-secondary mb-0">
+                    ₹{{ item.price|floatformat:2 }} × {{ item.quantity }}
+                </p>
+            </div>
+            <strong>₹{{ item.subtotal|floatformat:2 }}</strong>
+        </div>
+        {% endfor %}
+
+        <h4 class="text-end mt-4">
+            Total: ₹{{ order.total_amount|floatformat:2 }}
+        </h4>
+
+        <hr>
+        <h4>Delivery Details</h4>
+        <p>{{ order.full_name }}</p>
+        <p>{{ order.phone }}</p>
+        <p>{{ order.address }}, {{ order.city }} - {{ order.postal_code }}</p>
+
+        <a href="{% url 'order_history' %}"
+           class="btn btn-dark mt-3">Back to Orders</a>
+    </div>
+</div>
+{% endblock %}
